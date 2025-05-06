@@ -46,8 +46,16 @@ object Run extends ZIOAppDefault {
 
   def run =
     for {
+      _ <- zio.Console.printLine(
+        "****************************************************************************************"
+      )
+      _ <- zio.Console.printLine("\u001B[31mquartz-h2 doc: https://ollls.github.io/zio-quartz-h2-doc/\u001B[0m")
+      _ <- zio.Console.printLine(
+        "****************************************************************************************"
+      )
+
       args <- this.getArgs
-      //sbt "run --trace"
+      // sbt "run --trace"
       _ <- ZIO.when(args.find(_ == "--debug").isDefined)(ZIO.attempt(QuartzH2Server.setLoggingLevel(Level.DEBUG)))
       _ <- ZIO.when(args.find(_ == "--error").isDefined)(ZIO.attempt(QuartzH2Server.setLoggingLevel(Level.ERROR)))
       _ <- ZIO.when(args.find(_ == "--trace").isDefined)(ZIO.attempt(QuartzH2Server.setLoggingLevel(Level.TRACE)))
@@ -58,7 +66,8 @@ object Run extends ZIOAppDefault {
       // exitCode <- new QuartzH2Server("0.0.0.0", 8443, 16000, ctx).startIO_linuxOnly(1, R, filter)
       // exitCode <- new QuartzH2Server("0.0.0.0", 8443, 16000, ctx).startIO(R, filter, sync = true)
       // exitCode <- new QuartzH2Server("0.0.0.0", 8443, 16000, ctx).startIO(R, filter, sync = true)
-      exitCode <- new QuartzH2Server("0.0.0.0", 8080, 9000, null).startIO(R, filter, sync = false)
-      //exitCode <- new QuartzH2Server("0.0.0.0", 8443, 16000, ctx, incomingWinSize = 512000).startIO(R, filter, sync = false)
+      // exitCode <- new QuartzH2Server("0.0.0.0", 8080, 16000, null).startIO(R, filter, sync = false)
+      exitCode <- new QuartzH2Server("0.0.0.0", 8443, 16000, ctx, incomingWinSize = 512000)
+        .startIO(R, filter, sync = false)
     } yield (exitCode)
 }
